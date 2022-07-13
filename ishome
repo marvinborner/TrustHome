@@ -1,0 +1,15 @@
+#!/bin/env sh
+
+WIFIBSS="xx:xx:xx:xx:xx:xx"
+WIFISSID="HomeNet"
+
+set -e
+
+bss=$(iwctl station wlan0 show | grep "ConnectedBss" | awk '{print $2}')
+wifi=$(iwctl station wlan0 show | grep "Connected network" | awk '{print $3}')
+
+if [ "$bss" = "$WIFIBSS" ] && [ "$wifi" = "$WIFISSID" ]; then
+	exit 0
+else
+	exit 1
+fi
