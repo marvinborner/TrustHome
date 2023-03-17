@@ -8,7 +8,7 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *handle, int flags, int argc,
 				   const char **argv)
 {
 	if (fork() == 0) {
-		execl("/etc/security/ishome", NULL);
+		execl("/etc/security/isbypass", NULL);
 	} else {
 		int stat;
 		wait(&stat);

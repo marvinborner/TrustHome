@@ -1,0 +1,13 @@
+#!/bin/env sh
+
+# WARNING: This (obiously) isn't a replacement for normal challenge-response verification.
+# This only serves as an additional security measure IF YOU ALREADY TRUST YOUR ENVIRONMENT
+
+SERIAL="YOURSERIAL"
+connected=$(ykman list --serials 2>/dev/null)
+
+if [ "$connected" = "$SERIAL" ]; then
+	exit 0
+else
+	exit 1
+fi
