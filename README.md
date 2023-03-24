@@ -1,7 +1,9 @@
 # TrustHome
 
 TrustHome disables the password requirement for sudo/login while you’re
-using your home wifi and you have your yubikey connected.
+using your home wifi and you have your yubikey connected. The main
+difference to normal yubico challenge-response is that this
+authentication method doesn’t require any interaction.
 
 ### DISLAIMER: I’m not responsible for any security breaches you may encounter while having this installed. This is merely a utility for my personal convenience and should never be used if you’re serious about security. You should ALWAYS use other security measures, such as full disk encryption, in addition.
 

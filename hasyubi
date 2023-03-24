@@ -1,13 +1,22 @@
-#!/bin/env sh
+#!/bin/env bash
 
-# WARNING: This (obiously) isn't a replacement for normal challenge-response verification.
 # This only serves as an additional security measure IF YOU ALREADY TRUST YOUR ENVIRONMENT
+# choose one or more verification methods (TOTP is great obviously)
 
+set -e
+
+# serial verification
 SERIAL="YOURSERIAL"
 connected=$(ykman list --serials 2>/dev/null)
+[ "$connected" = "$SERIAL" ] || exit 1
 
-if [ "$connected" = "$SERIAL" ]; then
-	exit 0
-else
-	exit 1
-fi
+# TOTP verification
+TOTPKEY="YOURTOTPKEY"
+key=$(oathtool -b "$TOTPKEY" --totp=SHA1)
+gen=$(ykman oath accounts code linux | awk '{print $2}')
+exit $([ "$key" = "$gen" ])
+
+# stored public key verification
+# PUBKEY="YOURPUBLICKEYPATH"
+# pub=$(yubico-piv-tool -aread-cert -s9a -KSSH)
+# cmp -s <(echo "$pub") <(awk '{ print $1 " " $2 }' <$PUBKEY) || exit 1
