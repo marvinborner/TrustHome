@@ -7,8 +7,24 @@
 PAM_EXTERN int pam_sm_authenticate(pam_handle_t *handle, int flags, int argc,
 				   const char **argv)
 {
+	pid_t parent_pid = getppid();
+	char cmdline_file[128]; // this might be dumb lol
+	snprintf(cmdline_file, sizeof(cmdline_file), "/proc/%d/cmdline",
+		 parent_pid);
+	FILE *file = fopen(cmdline_file, "r");
+	if (!file) {
+		fprintf(stderr, "Failed to open %s\n", cmdline_file);
+		return PAM_ABORT;
+	}
+
+	char cmdline_buffer[1024] = { 0 };
+	size_t read_size =
+		fread(cmdline_buffer, 1, sizeof(cmdline_buffer) - 1, file);
+	fclose(file);
+	cmdline_buffer[read_size] = 0;
+
 	if (fork() == 0) {
-		execl("/etc/security/isbypass", NULL);
+		execl("/etc/security/isbypass", "", cmdline_buffer, NULL);
 	} else {
 		int stat;
 		wait(&stat);
